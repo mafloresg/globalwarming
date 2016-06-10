@@ -1,0 +1,224 @@
+<style>
+.small-code pre code {
+  font-size: 70%;
+}
+</style>
+
+Global Warming Shiny App
+========================================================
+author: Maria A. Flores
+date: 9 June 2016
+autosize: false
+
+Introduction
+========================================================
+The Global Warming Shiny App is intended to explore the evolution of 
+the land temperature anomalies in six different continental regions. Additionally, it shows a prediction for the next 10 years (2016-2026).
+
+The data is from the NOAA databases <http://www.ncdc.noaa.gov/cag/>. There is a data set for six continental regions. 
+
+Each dataset have the land temperature anomalies in a time series with two columns: the year and the anomaly value in Celsius degrees.
+
+Before building the app
+========================================================
+class: small-size
+<div class="small-size" style="font-size:80%;">
+For each continental region five different regression models were tested: lineal, orthogonal polynomial of 2nd, 3rd and 4th degrees, non-orthogonal polynomial of 4th degree and exponential.
+<br><br>
+In order to choose the model, _anova_ and _AIC_ functions were used, selecting the best model for each region. Finally, the residuals vs fitted values are plotted, to discard hidden patterns.</div>
+***
+<br>
+```{r echo=FALSE}
+if (!file.exists("1880-2016-Africa_land_temp_anomalies.csv")){
+    fileUrl <- "https://www.ncdc.noaa.gov/cag/time-series/global/africa/land/ytd/12/1880-2016.csv";
+    download.file(fileUrl, destfile="1880-2016-Africa_land_temp_anomalies.csv", method="curl");
+}
+
+if (!file.exists("1880-2016-Asia_land_temp_anomalies.csv")){
+    fileUrl <- "https://www.ncdc.noaa.gov/cag/time-series/global/asia/land/ytd/12/1880-2016.csv";
+    download.file(fileUrl, destfile="1880-2016-Asia_land_temp_anomalies.csv", method="curl");
+}
+
+if (!file.exists("1880-2016-Europe_land_temp_anomalies.csv")){
+    fileUrl <- "https://www.ncdc.noaa.gov/cag/time-series/global/europe/land/ytd/12/1880-2016.csv";
+    download.file(fileUrl, destfile="1880-2016-Europe_land_temp_anomalies.csv", method="curl");
+}
+
+if (!file.exists("1880-2016-North_America_land_temp_anomalies.csv")){
+    fileUrl <- "https://www.ncdc.noaa.gov/cag/time-series/global/northAmerica/land/ytd/12/1880-2016.csv";
+    download.file(fileUrl, destfile="1880-2016-North_America_land_temp_anomalies.csv", method="curl");
+}
+
+if (!file.exists("1880-2016-Oceania_land_temp_anomalies.csv")){
+    fileUrl <- "https://www.ncdc.noaa.gov/cag/time-series/global/oceania/land/ytd/12/1880-2016.csv";
+    download.file(fileUrl, destfile="1880-2016-Oceania_land_temp_anomalies.csv", method="curl");
+}
+
+if (!file.exists("1880-2016-South_America_land_temp_anomalies.csv")){
+    fileUrl <- "https://www.ncdc.noaa.gov/cag/time-series/global/southAmerica/land/ytd/12/1880-2016.csv";
+    download.file(fileUrl, destfile="1880-2016-South_America_land_temp_anomalies.csv", method="curl");
+}
+
+xx <- seq(1910, 2015, by=1)
+xxx <- seq(1910, 2026, by=1)
+
+par(mfrow=c(2,3))
+
+# Africa
+africaTempAnomalies <- read.csv("1880-2016-Africa_land_temp_anomalies.csv", 
+                                header = TRUE, skip = 3);
+
+africaFit1 <- lm(Value ~ Year, africaTempAnomalies);
+africaFit2 <- lm(Value ~ poly(Year,2, raw=TRUE), africaTempAnomalies);
+africaFit3 <- lm(Value ~ poly(Year,3, raw=TRUE), africaTempAnomalies);
+africaFit4p <- lm(Value ~ poly(Year,4), africaTempAnomalies);
+africaFit5 <- nls(Value ~ I(exp(1)^(a+b*Year))-0.5, data = africaTempAnomalies,                   start = list(a = 0, b = 0.0005))
+
+plot(africaTempAnomalies, pch=19, col="darkgrey", 
+     xlab="Year", ylab="Temperature Anomaly ºC", main="Africa")
+lines(xx, predict(africaFit1, data.frame(Year=xx)), col="red")
+lines(xx, predict(africaFit2, data.frame(Year=xx)), col="blue")
+lines(xx, predict(africaFit3, data.frame(Year=xx)), col="green")
+lines(xx, predict(africaFit4p, data.frame(Year=xx)), col="yellow")
+lines(xx, predict(africaFit5, list(Year = xx)), lty = 1, col = "orange")
+
+
+# Asia
+asiaTempAnomalies <- read.csv("1880-2016-Asia_land_temp_anomalies.csv", 
+                              header = TRUE, skip = 3);
+asiaFit1 <- lm(Value ~ Year, asiaTempAnomalies);
+asiaFit2 <- lm(Value ~ poly(Year,2, raw=TRUE), asiaTempAnomalies);
+asiaFit3 <- lm(Value ~ poly(Year,3, raw=TRUE), asiaTempAnomalies);
+asiaFit4p <- lm(Value ~ poly(Year,4), asiaTempAnomalies);
+asiaFit5 <- nls(Value ~ I(exp(1)^(a+b*Year))-0.3, data = asiaTempAnomalies, 
+                start = list(a = 0, b = 0.001))
+
+plot(asiaTempAnomalies, pch=19, col="darkgrey", 
+     xlab="Year", ylab="Temperature Anomaly ºC", main="Asia")
+lines(xx, predict(asiaFit1, data.frame(Year=xx)), col="red")
+lines(xx, predict(asiaFit2, data.frame(Year=xx)), col="blue")
+lines(xx, predict(asiaFit3, data.frame(Year=xx)), col="green")
+lines(xx, predict(asiaFit4p, data.frame(Year=xx)), col="yellow")
+lines(xx, predict(asiaFit5, list(Year = xx)), lty = 1, col = "orange")
+
+
+# Europe
+europeTempAnomalies <- read.csv("1880-2016-Europe_land_temp_anomalies.csv", 
+                                header = TRUE, skip = 3);
+europeFit1 <- lm(Value ~ Year, europeTempAnomalies);
+europeFit2 <- lm(Value ~ poly(Year,2, raw=TRUE), europeTempAnomalies);
+europeFit3 <- lm(Value ~ poly(Year,3, raw=TRUE), europeTempAnomalies);
+europeFit4p <- lm(Value ~ poly(Year,4), europeTempAnomalies);
+europeFit5 <- nls(Value ~ I(exp(1)^(a+b*Year))-0.16, data = europeTempAnomalies, 
+                  start = list(a = 0, b = 0.001))
+
+plot(europeTempAnomalies, pch=19, col="darkgrey", 
+     xlab="Year", ylab="Temperature Anomaly ºC", main="Europe")
+lines(xx, predict(europeFit1, data.frame(Year=xx)), col="red")
+lines(xx, predict(europeFit2, data.frame(Year=xx)), col="blue")
+lines(xx, predict(europeFit3, data.frame(Year=xx)), col="green")
+lines(xx, predict(europeFit5, list(Year = xx)), lty = 1, col = "orange")
+
+
+# North_America
+nAmericaTempAnomalies <- read.csv("1880-2016-North_America_land_temp_anomalies.csv", 
+                                  header = TRUE, skip = 3);
+nAmericaFit1 <- lm(Value ~ Year, nAmericaTempAnomalies);
+nAmericaFit2 <- lm(Value ~ poly(Year,2, raw=TRUE), nAmericaTempAnomalies);
+nAmericaFit3 <- lm(Value ~ poly(Year,3, raw=TRUE), nAmericaTempAnomalies);
+nAmericaFit4p <- lm(Value ~ poly(Year,4), nAmericaTempAnomalies);
+nAmericaFit5 <- nls(Value ~ I(exp(1)^(a+b*Year))-0.24, data = nAmericaTempAnomalies, 
+                    start = list(a = 0, b = 0.01))
+
+plot(nAmericaTempAnomalies, pch=19, col="darkgrey", 
+     xlab="Year", ylab="Temperature Anomaly ºC", main="North America")
+lines(xx, predict(nAmericaFit1, data.frame(Year=xx)), col="red")
+lines(xx, predict(nAmericaFit2, data.frame(Year=xx)), col="blue")
+lines(xx, predict(nAmericaFit3, data.frame(Year=xx)), col="green")
+lines(xx, predict(nAmericaFit4p, data.frame(Year=xx)), col="yellow")
+lines(xx, predict(nAmericaFit5, list(Year = xx)), lty = 1, col = "orange")
+
+# Oceania
+oceaniaTempAnomalies <- read.csv("1880-2016-Oceania_land_temp_anomalies.csv", 
+                                 header = TRUE, skip = 3);
+oceaniaFit1 <- lm(Value ~ Year, oceaniaTempAnomalies);
+oceaniaFit2 <- lm(Value ~ poly(Year,2, raw=TRUE), oceaniaTempAnomalies);
+oceaniaFit3 <- lm(Value ~ poly(Year,3, raw=TRUE), oceaniaTempAnomalies);
+oceaniaFit4p <- lm(Value ~ poly(Year,4), oceaniaTempAnomalies);
+oceaniaFit5 <- nls(Value ~ I(exp(1)^(a+b*Year))-0.2, data = oceaniaTempAnomalies, 
+                   start = list(a = 0, b = 0.01))
+
+plot(oceaniaTempAnomalies, pch=19, col="darkgrey", 
+     xlab="Year", ylab="Temperature Anomaly ºC", main="Oceania")
+lines(xx, predict(oceaniaFit1, data.frame(Year=xx)), col="red")
+lines(xx, predict(oceaniaFit2, data.frame(Year=xx)), col="blue")
+lines(xx, predict(oceaniaFit3, data.frame(Year=xx)), col="green")
+lines(xx, predict(oceaniaFit4p, data.frame(Year=xx)), col="yellow")
+lines(xx, predict(oceaniaFit5, list(Year = xx)), lty = 1, col = "orange")
+
+# South_America
+sAmericaTempAnomalies <- read.csv("1880-2016-South_America_land_temp_anomalies.csv", 
+                                  header = TRUE, skip = 3);
+sAmericaFit1 <- lm(Value ~ Year, sAmericaTempAnomalies);
+sAmericaFit2 <- lm(Value ~ poly(Year,2, raw=TRUE), sAmericaTempAnomalies);
+sAmericaFit3 <- lm(Value ~ poly(Year,3, raw=TRUE), sAmericaTempAnomalies);
+sAmericaFit4p <- lm(Value ~ poly(Year,4), sAmericaTempAnomalies);
+sAmericaFit5 <- nls(Value ~ I(exp(1)^(a+b*Year))-0.5, data = sAmericaTempAnomalies, 
+                    start = list(a = 0, b = 0))
+
+plot(sAmericaTempAnomalies, pch=19, col="darkgrey", 
+     xlab="Year", ylab="Temperature Anomaly ºC", main="South America")
+lines(xx, predict(sAmericaFit1, data.frame(Year=xx)), col="red")
+lines(xx, predict(sAmericaFit2, data.frame(Year=xx)), col="blue")
+lines(xx, predict(sAmericaFit3, data.frame(Year=xx)), col="green")
+lines(xx, predict(sAmericaFit4p, data.frame(Year=xx)), col="yellow")
+lines(xx, predict(sAmericaFit5, list(Year = xx)), lty = 1, col = "orange")
+```
+
+Before building the app
+========================================================
+class: small-size
+<div class="small-font", style="font-size:70%">
+
+```{r results='hide'}
+# Sample process, repeated for each region:
+
+# Compare the lineal models
+anova(sAmericaFit1, sAmericaFit2)
+anova(sAmericaFit2, sAmericaFit3)
+anova(sAmericaFit3, sAmericaFit4p)
+
+# For South America, this is the best lineal model
+summary(sAmericaFit2)
+
+# Compare the best lm vs the nls model
+AIC(sAmericaFit2, sAmericaFit5)
+```
+***
+<div class="small-font", style="font-size:70%">Best models:
+<ul>
+<li>- Africa: polynomial 4th degree</li>
+<li>- Asia: polynomial 4th degree</li>
+<li>- Europe: polynomial 4th degree</li>
+<li>- North America: polynomial 4th degree</li>
+<li>- Oceania: polynomial 2nd degree</li>
+<li>- South America: polynomial 2nd degree</li>
+</ul>
+
+Due to the difficult calculation of prediction intervals for exponential models
+(_nls_ objects), for Europe and South America was selected the second best model.
+
+The Global Warming App
+========================================================
+<div class="small-size" style="font-size:50%;">
+The ui.R interface was built using the [shinydashboard](http://rstudio.github.io/shinydashboard/index.html) library, with three tabs.
+
+The selector in the left panel is used to change the continental region in the _Dashboard_ and _Data_ tabs. Changing the region, a reactive sentence in server.R changes the used dataset, changing the plot, the fitting, the prediction interval, the data in _Data_ tab and some text outputs.
+
+In _Dashboard_ tab, the plot is using [rCharts](http://rcharts.io/). In the box in the right side there is a slider that allows, by means of reactive sentences in server.R, to choose the year, moving a point in the fitted line and changing the values.
+
+In _Data_ tab there is a table with the data used in the app (original and calculated). The table is built using the [DT](http://rstudio.github.io/DT/) library.
+
+In the _Reference_ tab there is some documentation about using the app.
+<br>
+![Dashboard tab](tab1.png)
