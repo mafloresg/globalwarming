@@ -15,9 +15,9 @@ Introduction
 The Global Warming Shiny App is intended to explore the evolution of 
 the land temperature anomalies in six different continental regions. Additionally, it shows a prediction for the next 10 years (2016-2026).
 
-The data is from the NOAA databases <http://www.ncdc.noaa.gov/cag/>. There is a data set for six continental regions. 
+The data is from the NOAA databases <http://www.ncdc.noaa.gov/cag/>. There is a data set for each one of the six continental regions. 
 
-Each dataset have the land temperature anomalies in a time series with two columns: the year and the anomaly value in Celsius degrees.
+Each data set have the land temperature anomalies in a time series with two columns: the year and the anomaly value in Celsius degrees.
 
 Before building the app
 ========================================================
@@ -25,7 +25,7 @@ class: small-size
 <div class="small-size" style="font-size:80%;">
 For each continental region five different regression models were tested: lineal, orthogonal polynomial of 2nd, 3rd and 4th degrees, non-orthogonal polynomial of 4th degree and exponential.
 <br><br>
-In order to choose the model, _anova_ and _AIC_ functions were used, selecting the best model for each region. Finally, the residuals vs fitted values are plotted, to discard hidden patterns.</div>
+In order to choose the model, <i>anova</i> and <i>AIC</i> functions were used, selecting the best model for each region. Finally, the residuals vs fitted values are plotted, to discard hidden patterns.</div>
 ***
 <br>
 ![plot of chunk unnamed-chunk-1](globalWarmingApp-figure/unnamed-chunk-1-1.png)
@@ -37,7 +37,7 @@ class: small-size
 
 
 ```r
-# Sample process, repeated for each region:
+# i.e. Process for South America, repeated for each region:
 
 # Compare the lineal models
 anova(sAmericaFit1, sAmericaFit2)
@@ -67,9 +67,9 @@ Due to the difficult calculation of prediction intervals for exponential models
 The Global Warming App
 ========================================================
 <div class="small-size" style="font-size:50%;">
-The ui.R interface was built using the [shinydashboard](http://rstudio.github.io/shinydashboard/index.html) library, with three tabs.
+The ui.R interface was built using the [shinydashboard](http://rstudio.github.io/shinydashboard/index.html) library, with three tabs. 
 
-The selector in the left panel is used to change the continental region in the _Dashboard_ and _Data_ tabs. Changing the region, a reactive sentence in server.R changes the used dataset, changing the plot, the fitting, the prediction interval, the data in _Data_ tab and some text outputs.
+The selector in the left panel is used to change the continental region in the _Dashboard_ and _Data_ tabs. Changing the region, a reactive sentence in server.R changes the used data set, changing the plot, the fitting, the prediction interval, the data in _Data_ tab and some text outputs.
 
 In _Dashboard_ tab, the plot is using [rCharts](http://rcharts.io/). In the box in the right side there is a slider that allows, by means of reactive sentences in server.R, to choose the year, moving a point in the fitted line and changing the values.
 
