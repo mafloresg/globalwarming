@@ -23,7 +23,7 @@ Before building the app
 ========================================================
 class: small-size
 <div class="small-size" style="font-size:80%;">
-For each continental region five different regression models were tested: lineal, orthogonal polynomial of 2nd, 3rd and 4th degrees, non-orthogonal polynomial of 4th degree and exponential.
+For each continental region five different regression models were tested: lineal, orthogonal polynomial of 2nd and 3rd, non-orthogonal polynomial of 4th degree, and exponential.
 <br><br>
 In order to choose the model, <i>anova</i> and <i>AIC</i> functions were used, selecting the best model for each region. Finally, the residuals vs fitted values are plotted, to discard hidden patterns.</div>
 ***
@@ -33,32 +33,15 @@ In order to choose the model, <i>anova</i> and <i>AIC</i> functions were used, s
 Before building the app
 ========================================================
 class: small-size
-<div class="small-font", style="font-size:70%">
 
-
-```r
-# i.e. Process for South America, repeated for each region:
-
-# Compare the lineal models
-anova(sAmericaFit1, sAmericaFit2)
-anova(sAmericaFit2, sAmericaFit3)
-anova(sAmericaFit3, sAmericaFit4p)
-
-# For South America, this is the best lineal model
-summary(sAmericaFit2)
-
-# Compare the best lm vs the nls model
-AIC(sAmericaFit2, sAmericaFit5)
-```
-***
-<div class="small-font", style="font-size:70%">Best models:
+Selected models:
 <ul>
-<li>- Africa: polynomial 4th degree</li>
-<li>- Asia: polynomial 4th degree</li>
-<li>- Europe: polynomial 4th degree</li>
-<li>- North America: polynomial 4th degree</li>
-<li>- Oceania: polynomial 2nd degree</li>
-<li>- South America: polynomial 2nd degree</li>
+<li>Africa: polynomial 4th degree</li>
+<li>Asia: polynomial 4th degree</li>
+<li>Europe: polynomial 4th degree</li>
+<li>North America: polynomial 4th degree</li>
+<li>Oceania: polynomial 2nd degree</li>
+<li>South America: polynomial 2nd degree</li>
 </ul>
 
 Due to the difficult calculation of prediction intervals for exponential models
