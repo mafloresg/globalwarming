@@ -25,7 +25,8 @@ class: small-size
 <div class="small-size" style="font-size:80%;">
 For each continental region five different regression models were tested: lineal, orthogonal polynomial of 2nd and 3rd, non-orthogonal polynomial of 4th degree, and exponential.
 <br><br>
-In order to choose the model, <i>anova</i> and <i>AIC</i> functions were used, selecting the best model for each region. Finally, the residuals vs fitted values are plotted, to discard hidden patterns.</div>
+In order to choose the model, <i>anova</i> and <i>AIC</i> functions were used, selecting the best model for each region. Finally, the residuals vs fitted values are plotted, to discard hidden patterns.
+<div class="small-size" style="font-size:50%;">The next plots are made executing R code, but I don't show it because of lack of space. You can see the code in the .Rpres original file <https://github.com/mafloresg/globalwarming>
 ***
 <br>
 ![plot of chunk unnamed-chunk-1](globalWarmingApp-figure/unnamed-chunk-1-1.png)
